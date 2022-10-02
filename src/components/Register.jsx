@@ -27,7 +27,6 @@ const Register = props => {
 
       setState(old => ({
         ...old,
-        message: "Что-то пошло не так!",
       }))
     });
   }

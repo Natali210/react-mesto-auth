@@ -10,7 +10,7 @@ const PopupWithForm = props => {
         <button className="popup__close" aria-label="Закрыть" type="button" onClick={onClose} />
 
         <form className="popup__form"
-        name={`${name}_form`} noValidate>
+        name={`${name}_form`}>
           <h2 className="popup__title">{title}</h2>
           {children}
           <button className="popup__button"

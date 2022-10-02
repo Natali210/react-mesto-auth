@@ -1,4 +1,3 @@
-import "../index.css";
 import Header from './Header';
 import Main from './Main';
 import PopupWithForm from "./PopupWithForm";
@@ -34,9 +33,10 @@ const App = () => {
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [userEmail, setUserEmail] = useState('');
 
-  //Эффект, который вызывает Api по пользователю для обновления значений
+  //Эффект, который вызывает Api для обновления значений пользователя и получения карточек
   useEffect(() => {
     if (!loggedIn) return;
+
     api.getUserInfo()
     .then((res) => {
       setCurrentUser(res);
@@ -44,11 +44,7 @@ const App = () => {
     .catch((err) => {
       console.log(`Ошибка: ${err}`);
     });
-  }, [loggedIn]);
-  
-  //Эффект, который вызывает Api для получения карточек
-  useEffect(() => {
-    if (!loggedIn) return;
+
     api.getCards()
     .then((cards) => {
       setCards(cards);
@@ -143,7 +139,7 @@ const App = () => {
         setIsConfirmed(true);
         setIsInfoTooltip(true);
         setLoggedIn(true);
-        history.push("/");
+        history.push("/sign-in");
       })
       .catch((err) => {
         console.log(`Ошибка: ${err}`);
@@ -176,25 +172,26 @@ const App = () => {
   }
 
 //Сохранение пользователя, зашедшего в систему
-function tokenCheck() {
-  if (!localStorage.getItem("jwt")) return;
-  const jwt = localStorage.getItem("jwt");
-  return auth.getContent(jwt)
-    .then((res) => {
-      if (res) {
-        setUserEmail(res.data.email);
-        setLoggedIn(true);
-        history.push("/");
-      }
-    })
-    .catch((err) => {
-      console.log(`Ошибка: ${err}`);
-    });
-}
-
 useEffect(() => {
+  const tokenCheck = () => {
+    if (!localStorage.getItem("jwt")) return;
+    const jwt = localStorage.getItem("jwt");
+
+    auth.getContent(jwt)
+      .then((res) => {
+        if (res) {
+          setUserEmail(res.data.email);
+          setLoggedIn(true);
+          history.push("/");
+        }
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      });
+  };
+
   tokenCheck();
-}, []);
+}, [history]);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -254,6 +251,7 @@ useEffect(() => {
 
           <InfoTooltip
             isOpen={isInfoTooltip} onClose={closeAllPopups} isConfirmed={isConfirmed}
+            successInfo="Вы успешно зарегистрировались!" unsuccessInfo="Что-то пошло не так! Попробуйте ещё раз."
           />
         </div>
       </div>

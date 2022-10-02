@@ -31,7 +31,7 @@ const Login = props => {
       })
       .catch(err => {
         console.log(`Ошибка: ${err}`);
-        setState(old => ({...old, message: "Что-то пошло не так!" }));
+        setState(old => ({...old}));
       })
   }
 
